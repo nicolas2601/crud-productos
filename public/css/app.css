@@ -1,0 +1,125 @@
+/* Anime & Gaming Theme CSS */
+
+/* Custom Background */
+body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    background-attachment: fixed;
+    color: #fff;
+    font-family: 'Instrument Sans', sans-serif;
+}
+
+/* Custom Navbar */
+.navbar {
+    background: rgba(0, 0, 0, 0.7) !important;
+    border-bottom: 2px solid #ff00ff;
+    box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+}
+
+/* Cards with anime/gaming style */
+.card {
+    background: rgba(20, 20, 40, 0.8);
+    border: 1px solid #7e3ff2;
+    box-shadow: 0 0 15px rgba(126, 63, 242, 0.5);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.7);
+}
+
+.card-header {
+    background: rgba(30, 30, 60, 0.9);
+    border-bottom: 1px solid #7e3ff2;
+}
+
+.card-body {
+    color: #e0e0ff;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(45deg, #7e3ff2, #ff00ff);
+    border: none;
+    box-shadow: 0 0 10px rgba(126, 63, 242, 0.5);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #ff00ff, #7e3ff2);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+}
+
+.btn-outline-secondary {
+    border-color: #7e3ff2;
+    color: #7e3ff2;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #7e3ff2;
+    color: #fff;
+}
+
+/* Tables */
+.table {
+    background: rgba(20, 20, 40, 0.5);
+    color: #e0e0ff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: rgba(30, 30, 60, 0.9);
+}
+
+.table tbody tr:hover {
+    background: rgba(126, 63, 242, 0.2);
+}
+
+/* Form elements */
+.form-control, .form-select {
+    background: rgba(30, 30, 60, 0.6);
+    border: 1px solid #7e3ff2;
+    color: #e0e0ff;
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(40, 40, 80, 0.8);
+    border-color: #ff00ff;
+    box-shadow: 0 0 0 0.25rem rgba(255, 0, 255, 0.25);
+    color: #fff;
+}
+
+/* Footer */
+footer {
+    background: rgba(0, 0, 0, 0.7);
+    border-top: 2px solid #ff00ff;
+    color: #e0e0ff;
+}
+
+/* Text elements */
+h1, h2, h3, h4, h5, h6 {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(126, 63, 242, 0.5);
+}
+
+.text-muted {
+    color: #a0a0d0 !important;
+}
+
+/* Animations */
+@keyframes glow {
+    0% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+    50% { text-shadow: 0 0 15px #7e3ff2, 0 0 30px #7e3ff2; }
+    100% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+}
+
+.navbar-brand {
+    animation: glow 2s infinite;
+}
