@@ -2,99 +2,95 @@
 
 @section('title', 'Listado de Productos')
 
-@section('styles')
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
-@endsection
-
 @section('content')
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h1 class="display-5 fw-bold">Productos</h1>
-            <p class="text-muted">Gestiona tu catálogo de productos de anime y videojuegos</p>
+<div class="container mx-auto px-4 sm:px-8 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between mb-8 space-y-4 md:space-y-0">
+        <div>
+            <h1 class="text-3xl font-bold text-purple-300">Productos</h1>
+            <p class="text-gray-400 mt-1">Gestiona tu catálogo de productos de anime y videojuegos</p>
         </div>
-        <div class="col-md-6 text-md-end d-flex align-items-center justify-content-md-end gap-2">
-            <a href="{{ route('productos.papelera') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-trash me-2"></i>Papelera
+        <div class="flex items-center space-x-4">
+            <a href="{{ route('productos.papelera') }}" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition duration-300 flex items-center">
+                <i class="fas fa-trash mr-2"></i>Papelera
             </a>
-            <a href="{{ route('entradas.create') }}" class="btn btn-outline-primary me-2">
-                <i class="bi bi-box-arrow-in-down me-2"></i>Nueva Entrada
+            <a href="{{ route('productos.create') }}" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-300 flex items-center">
+                <i class="fas fa-plus-circle mr-2"></i>Nuevo Producto
             </a>
-            <a href="{{ route('productos.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i>Nuevo Producto
-            </a>
+        </div>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <div class="mb-8">
+        <div class="relative">
+            <input type="text" id="searchInput" class="w-full px-4 py-3 pl-12 bg-gray-800 border-2 border-purple-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 transition duration-300" placeholder="Buscar productos...">
+            <div class="absolute left-4 top-3.5 text-gray-400">
+                <i class="fas fa-search"></i>
+            </div>
         </div>
     </div>
 
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="bg-green-600 text-white px-4 py-3 rounded-lg mb-6 flex items-center justify-between" role="alert">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            {{ session('success') }}
+        </div>
+        <button type="button" class="text-white hover:text-gray-200" data-dismiss="alert" aria-label="Close">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
     @endif
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table id="productos-table" class="table table-striped dt-responsive nowrap w-100">
+    <div class="bg-gray-900 rounded-lg shadow-xl border-2 border-purple-500 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-purple-400">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Franquicia</th>
-                        <th>Precio</th>
-                        <th>Stock</th>
-                        <th>Destacado</th>
-                        <th>Acciones</th>
+                    <tr class="bg-gray-800">
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-purple-300">Producto</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-purple-300">Categoría</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-purple-300">Stock</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-purple-300">Precio</th>
+                        <th class="px-6 py-4 text-right text-sm font-semibold text-purple-300">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-purple-400" id="productosTable">
                     @foreach($productos as $producto)
-                    <tr>
-                        <td>{{ $producto->id }}</td>
-                        <td>
-                            @if($producto->imagen)
-                            <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="img-thumbnail" width="50">
-                            @else
-                            <span class="badge bg-secondary">Sin imagen</span>
-                            @endif
+                    <tr class="hover:bg-gray-800 transition-all duration-300">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center space-x-4">
+                                @if($producto->imagen)
+                                <img src="{{ Storage::url($producto->imagen) }}" alt="{{ $producto->nombre }}" class="w-12 h-12 rounded-lg object-cover border-2 border-purple-400">
+                                @else
+                                <div class="w-12 h-12 rounded-lg bg-purple-600 flex items-center justify-center">
+                                    <i class="fas fa-box text-white text-xl"></i>
+                                </div>
+                                @endif
+                                <div>
+                                    <p class="text-white font-medium">{{ $producto->nombre }}</p>
+                                    <p class="text-gray-400 text-sm">{{ Str::limit($producto->descripcion, 50) }}</p>
+                                </div>
+                            </div>
                         </td>
-                        <td>{{ $producto->nombre }}</td>
-                        <td>{{ $producto->categoria }}</td>
-                        <td>{{ $producto->franquicia ?? 'N/A' }}</td>
-                        <td>${{ number_format($producto->precio, 2) }}</td>
-                        <td>
-                            @if($producto->stock > 10)
-                            <span class="badge bg-success">{{ $producto->stock }}</span>
-                            @elseif($producto->stock > 0)
-                            <span class="badge bg-warning">{{ $producto->stock }}</span>
-                            @else
-                            <span class="badge bg-danger">Agotado</span>
-                            @endif
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 text-sm text-purple-300 bg-purple-900 rounded-full">{{ $producto->categoria }}</span>
                         </td>
-                        <td>
-                            @if($producto->es_destacado)
-                            <span class="badge bg-primary"><i class="bi bi-star-fill"></i> Destacado</span>
-                            @else
-                            <span class="badge bg-light text-dark">No</span>
-                            @endif
+                        <td class="px-6 py-4">
+                            <span class="text-{{ $producto->stock > 10 ? 'green' : 'red' }}-400">{{ $producto->stock }}</span>
                         </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a href="{{ route('productos.show', $producto) }}" class="btn btn-sm btn-info">
-                                    <i class="bi bi-eye"></i>
+                        <td class="px-6 py-4 text-white">${{ number_format($producto->precio, 2) }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-end space-x-3">
+                                <a href="{{ route('productos.show', $producto) }}" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">
+                                    <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="{{ route('productos.edit', $producto) }}" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil"></i>
+                                <a href="{{ route('productos.edit', $producto) }}" class="text-yellow-400 hover:text-yellow-300 transition-colors duration-200">
+                                    <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('productos.destroy', $producto) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
+                                <form action="{{ route('productos.destroy', $producto) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i>
+                                    <button type="submit" class="text-red-400 hover:text-red-300 transition-colors duration-200" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
                             </div>
@@ -106,23 +102,23 @@
         </div>
     </div>
 </div>
-@endsection
 
 @section('scripts')
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-
 <script>
-    $(document).ready(function() {
-        $('#productos-table').DataTable({
-            responsive: true,
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const productosTable = document.getElementById('productosTable');
+    const rows = productosTable.getElementsByTagName('tr');
+
+    searchInput.addEventListener('keyup', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+
+        Array.from(rows).forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? '' : 'none';
         });
     });
+});
 </script>
+@endsection
 @endsection
