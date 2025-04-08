@@ -4,35 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('title') - Tienda Anime y Videojuegos</title>
+    <title>@yield('title', 'Tienda Anime y Videojuegos')</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     
     @yield('styles')
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    <i class="bi bi-controller me-2"></i>Anime Store
+    <header class="bg-gray-900 text-white">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <a class="text-xl font-bold" href="{{ url('/') }}">
+                    <i class="fas fa-gamepad mr-2"></i>Anime Store
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('productos.*') ? 'active' : '' }}" href="{{ route('productos.index') }}">
-                                <i class="bi bi-box-seam me-1"></i>Productos
-                            </a>
-                        </li>
-                    </ul>
+                <div class="hidden md:flex space-x-6">
+                    <a class="hover:text-purple-400 {{ request()->routeIs('productos.*') ? 'text-purple-400' : '' }}" href="{{ route('productos.index') }}">
+                        <i class="fas fa-box mr-1"></i>Productos
+                    </a>
+                    <a class="hover:text-purple-400 {{ request()->routeIs('proveedores.*') ? 'text-purple-400' : '' }}" href="{{ route('proveedores.index') }}">
+                        <i class="fas fa-truck mr-1"></i>Proveedores
+                    </a>
+                    <a class="hover:text-purple-400 {{ request()->routeIs('entradas.*') ? 'text-purple-400' : '' }}" href="{{ route('entradas.create') }}">
+                        <i class="fas fa-plus-circle mr-1"></i>Nueva Entrada
+                    </a>
                 </div>
             </div>
         </nav>
@@ -42,24 +41,20 @@
         @yield('content')
     </main>
 
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="bi bi-controller me-2"></i>Anime Store</h5>
-                    <p>Tu tienda de productos de anime y videojuegos favorita.</p>
+    <footer class="bg-gray-900 text-white py-8 mt-8">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h5 class="text-xl font-bold"><i class="fas fa-gamepad mr-2"></i>Anime Store</h5>
+                    <p class="text-gray-400">Tu tienda de productos de anime y videojuegos favorita.</p>
                 </div>
-                <div class="col-md-6 text-md-end">
+                <div class="text-gray-400">
                     <p>&copy; {{ date('Y') }} Anime Store. Todos los derechos reservados.</p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="{{ asset('js/app.js') }}"></script>
     

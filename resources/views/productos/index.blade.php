@@ -19,6 +19,9 @@
             <a href="{{ route('productos.papelera') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-trash me-2"></i>Papelera
             </a>
+            <a href="{{ route('entradas.create') }}" class="btn btn-outline-primary me-2">
+                <i class="bi bi-box-arrow-in-down me-2"></i>Nueva Entrada
+            </a>
             <a href="{{ route('productos.create') }}" class="btn btn-primary">
                 <i class="bi bi-plus-circle me-2"></i>Nuevo Producto
             </a>
