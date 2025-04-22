@@ -31,7 +31,7 @@ class Entrada extends Model
      * @var array
      */
     protected $casts = [
-        'fecha' => 'date',
+        'fecha' => 'datetime',
     ];
 
     /**

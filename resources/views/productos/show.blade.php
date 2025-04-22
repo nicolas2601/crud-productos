@@ -42,14 +42,7 @@
                             <th class="bg-light">Precio</th>
                             <td>${{ number_format($producto->precio, 2) }}</td>
                         </tr>
-                        <tr>
-                            <th class="bg-light">Proveedor</th>
-                            <td>
-                                <a href="{{ route('proveedores.show', $producto->proveedor_id) }}">
-                                    {{ $producto->proveedor->nombre }} ({{ $producto->proveedor->empresa }})
-                                </a>
-                            </td>
-                        </tr>
+
                         <tr>
                             <th class="bg-light">Fecha de Creación</th>
                             <td>{{ $producto->created_at->format('d/m/Y H:i:s') }}</td>
@@ -59,6 +52,28 @@
                             <td>{{ $producto->updated_at->format('d/m/Y H:i:s') }}</td>
                         </tr>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Proveedores Asociados</h5>
+                </div>
+                <div class="card-body">
+                    @if($producto->proveedores->count() > 0)
+                        <ul class="list-group">
+                            @foreach($producto->proveedores as $proveedor)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('proveedores.show', $proveedor->id) }}">{{ $proveedor->nombre }} ({{ $proveedor->empresa }})</a>
+                                    <span class="badge bg-primary rounded-pill">Precio Compra: ${{ number_format($proveedor->pivot->precio_compra ?? 0, 2) }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <div class="alert alert-secondary">No hay proveedores asociados a este producto.</div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -141,7 +156,7 @@
                                     @foreach($producto->entradas as $entrada)
                                         <tr>
                                             <td>{{ $entrada->id }}</td>
-                                            <td>{{ $entrada->proveedor->nombre }}</td>
+                                            <td>{{ $entrada->proveedores->first()->nombre ?? 'N/A' }}</td>
                                             <td>{{ $entrada->cantidad }}</td>
                                             <td>${{ number_format($entrada->precio_unitario, 2) }}</td>
                                             <td>${{ number_format($entrada->total, 2) }}</td>

@@ -30,7 +30,7 @@
                             @foreach($entradas as $entrada)
                                 <tr>
                                     <td>{{ $entrada->id }}</td>
-                                    <td>{{ $entrada->proveedor->nombre }}</td>
+                                    <td>{{ optional($entrada->proveedores)->first()->nombre ?? 'N/A' }}</td>
                                     <td>{{ $entrada->producto->nombre }}</td>
                                     <td>{{ $entrada->cantidad }}</td>
                                     <td>${{ number_format($entrada->precio_unitario, 2) }}</td>
@@ -38,7 +38,7 @@
                                     <td>{{ $entrada->fecha->format('d/m/Y') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('entradas.show', $entrada->id) }}" class="btn btn-sm btn-info" title="Ver detalles">
+                                            <a href="{{ route('entradas.show', $entrada->id) }}" class="btn btn-sm btn-info">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('entradas.factura', $entrada->id) }}" class="btn btn-sm btn-primary" title="Ver factura">

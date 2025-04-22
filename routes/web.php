@@ -37,3 +37,7 @@ Route::resource('entradas', EntradaController::class)->except(['edit', 'update',
 Route::get('entradas/{entrada}/factura', [EntradaController::class, 'factura'])->name('entradas.factura');
 Route::get('entradas/{entrada}/pdf', [EntradaController::class, 'generarPdf'])->name('entradas.pdf');
 Route::get('get-productos-by-proveedor', [EntradaController::class, 'getProductosByProveedor'])->name('get.productos.by.proveedor');
+
+// Rutas para Salidas de Inventario
+Route::resource('salidas', App\Http\Controllers\SalidaInventarioController::class)->except(['destroy']); // Excluir destroy si no se implementa o se maneja de otra forma
+// Si necesitas rutas adicionales para SalidaInventario, añádelas aquí.

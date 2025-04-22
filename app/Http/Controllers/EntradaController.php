@@ -36,8 +36,17 @@ class EntradaController extends Controller
      */
     public function getProductosByProveedor(Request $request)
     {
-        $productos = Producto::where('proveedor_id', $request->proveedor_id)->get();
-        return response()->json($productos);
+        $proveedor = Proveedor::find($request->proveedor_id);
+        $productos = $proveedor ? $proveedor->productos()->get() : collect();
+        
+        return response()->json($productos->map(function ($producto) {
+            return [
+                'id' => $producto->id,
+                'nombre' => $producto->nombre,
+                'stock' => $producto->stock,
+                'precio' => $producto->precio
+            ];
+        }));
     }
 
     /**

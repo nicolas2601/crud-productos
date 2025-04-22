@@ -104,6 +104,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('entradas.index') }}">Entradas</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('salidas.index') }}" class="nav-link">
+                            <i class="nav-icon fas fa-sign-out-alt"></i>
+                            <p>Salidas de Inventario</p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

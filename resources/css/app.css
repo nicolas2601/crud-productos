@@ -1,0 +1,398 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap');
+
+/* Variables de colores futuristas */
+:root {
+    --primary: #00a8ff;
+    --secondary: #0097e6;
+    --accent: #00e4ff;
+    --dark: #111111;
+    --darker: #0a0a0a;
+    --light: #f5f6fa;
+    --card-bg: rgba(10, 10, 15, 0.8);
+    --card-border: rgba(0, 228, 255, 0.3);
+    --glow: 0 0 10px rgba(0, 228, 255, 0.5);
+    --glow-strong: 0 0 20px rgba(0, 228, 255, 0.8);
+}
+
+/* Estilos base */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--darker);
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(0, 168, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(0, 228, 255, 0.05) 0%, transparent 50%);
+    color: var(--light);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Efecto de líneas de grid futurista */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to right, rgba(0, 168, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 168, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Navbar futurista */
+.navbar {
+    background-color: var(--dark) !important;
+    border-bottom: 1px solid var(--card-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    color: var(--accent) !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--light);
+    position: relative;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--accent);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover::after {
+    width: 80%;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--accent);
+}
+
+.navbar-dark .navbar-nav .nav-link.active::after {
+    width: 80%;
+}
+
+/* Sidebar futurista */
+.sidebar {
+    background-color: var(--dark) !important;
+    border-right: 1px solid var(--card-border);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar a {
+    color: var(--light);
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.sidebar a:hover {
+    background-color: rgba(0, 168, 255, 0.1);
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+}
+
+.sidebar a.active {
+    background-color: rgba(0, 168, 255, 0.15);
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    box-shadow: inset 0 0 10px rgba(0, 168, 255, 0.1);
+}
+
+/* Tarjetas futuristas */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--glow), 0 15px 30px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent);
+}
+
+.card-header {
+    background-color: rgba(0, 168, 255, 0.1);
+    border-bottom: 1px solid var(--card-border);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+}
+
+.card-title {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+}
+
+/* Botones futuristas */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border: none;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+    z-index: -1;
+}
+
+.btn-primary:hover {
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-outline-light {
+    border: 1px solid var(--light);
+    color: var(--light);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--dark);
+    box-shadow: var(--glow);
+}
+
+/* Tablas futuristas */
+.table {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+}
+
+.table thead th {
+    background-color: rgba(0, 168, 255, 0.1);
+    color: var(--accent);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--card-border);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 168, 255, 0.05);
+}
+
+.table tbody td {
+    border-color: rgba(0, 168, 255, 0.1);
+    vertical-align: middle;
+}
+
+/* Sección Hero */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--glow);
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 25%),
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 25%);
+    z-index: 0;
+}
+
+.hero-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Feature cards */
+.feature-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--glow);
+    border-color: var(--accent);
+}
+
+.feature-icon {
+    color: var(--accent);
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.2);
+    color: var(--primary);
+}
+
+/* Stats cards */
+.stats-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-left: 5px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--glow);
+}
+
+/* Paginación */
+.pagination {
+    margin-top: 2rem;
+}
+
+.pagination .page-item .page-link {
+    background-color: var(--dark);
+    color: var(--light);
+    border-color: var(--card-border);
+    transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--light);
+    box-shadow: var(--glow);
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: var(--primary);
+    color: var(--light);
+    box-shadow: var(--glow);
+}
+
+/* Formularios futuristas */
+.form-control, .form-select {
+    background-color: rgba(10, 10, 15, 0.6);
+    border: 1px solid var(--card-border);
+    color: var(--light);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: rgba(10, 10, 15, 0.8);
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+    color: var(--light);
+}
+
+.form-label {
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Animaciones para elementos que aparecen */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Clases para animaciones con anime.js */
+.anime-element {
+    opacity: 0;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 0;
+    }
+    
+    .feature-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .stats-card {
+        margin-bottom: 1rem;
+    }
+}

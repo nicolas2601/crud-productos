@@ -4,13 +4,10 @@
 <div class="container-fluid fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Listado de Productos</h1>
-        <div>
-            <a href="{{ route('productos.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i> Nuevo Producto
-            </a>
-            <a href="{{ route('productos.trash') }}" class="btn btn-secondary ms-2">
-                <i class="fas fa-trash me-1"></i> Papelera
-            </a>
+        <div class="float-right mb-3">
+            <a class="btn btn-success" href="{{ route('productos.create') }}">Crear Producto</a>
+            <a class="btn btn-warning" href="{{ route('productos.trash') }}">Papelera</a>
+            <a class="btn btn-info" href="{{ route('salidas.create') }}">Registrar Salida</a>
         </div>
     </div>
 
@@ -38,7 +35,7 @@
                                     <td>{{ Str::limit($producto->descripcion, 30) }}</td>
                                     <td>{{ $producto->stock }}</td>
                                     <td>${{ number_format($producto->precio, 2) }}</td>
-                                    <td>{{ $producto->proveedor->nombre }}</td>
+                                    <td>{{ $producto->proveedores->first()->nombre ?? 'N/A' }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('productos.show', $producto->id) }}" class="btn btn-sm btn-info">

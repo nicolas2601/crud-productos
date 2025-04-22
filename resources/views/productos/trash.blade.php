@@ -34,7 +34,7 @@
                                     <td>{{ Str::limit($producto->descripcion, 30) }}</td>
                                     <td>{{ $producto->stock }}</td>
                                     <td>${{ number_format($producto->precio, 2) }}</td>
-                                    <td>{{ $producto->proveedor->nombre }}</td>
+                                    <td>{{ $producto->proveedores->first()->nombre ?? 'N/A' }}</td>
                                     <td>{{ $producto->deleted_at->format('d/m/Y H:i:s') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">

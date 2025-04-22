@@ -52,17 +52,24 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="proveedor_id" class="form-label">Proveedor</label>
-                    <select class="form-select @error('proveedor_id') is-invalid @enderror" id="proveedor_id" name="proveedor_id" required>
-                        <option value="">Seleccione un proveedor</option>
-                        @foreach($proveedores as $proveedor)
-                            <option value="{{ $proveedor->id }}" {{ old('proveedor_id', $producto->proveedor_id) == $proveedor->id ? 'selected' : '' }}>
+                    <label for="proveedores" class="form-label">Proveedores</label>
+                    <select multiple class="form-select @error('proveedores') is-invalid @enderror" id="proveedores" name="proveedores[]" size="5">
+                        @php
+                            // Obtener los IDs de los proveedores actualmente asociados al producto
+                            $proveedoresProducto = $producto->proveedores->pluck('id')->toArray();
+                        @endphp
+                        @foreach ($proveedores as $proveedor)
+                            <option value="{{ $proveedor->id }}" {{ in_array($proveedor->id, old('proveedores', $proveedoresProducto)) ? 'selected' : '' }}>
                                 {{ $proveedor->nombre }} ({{ $proveedor->empresa }})
                             </option>
                         @endforeach
                     </select>
-                    @error('proveedor_id')
+                    <small class="form-text text-muted">Mantén presionada la tecla Ctrl (o Cmd en Mac) para seleccionar múltiples proveedores.</small>
+                    @error('proveedores')
                         <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    @error('proveedores.*') {{-- Para errores de validación de cada elemento del array --}}
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
 

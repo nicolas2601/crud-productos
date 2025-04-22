@@ -22,8 +22,8 @@ class Compra extends Model
     ];
 
     protected $casts = [
-        'fecha_compra' => 'date',
-        'fecha_vencimiento' => 'date',
+        'fecha_compra' => 'datetime',
+        'fecha_vencimiento' => 'datetime',
         'precio_unitario' => 'decimal:2',
         'total' => 'decimal:2'
     ];

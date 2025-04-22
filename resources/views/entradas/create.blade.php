@@ -151,7 +151,9 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    productoSelect.innerHTML = '<option value="">Error al cargar productos</option>';
+                    productoSelect.innerHTML = '<option value="">Error cargando productos</option>';
+                    productoSelect.disabled = true;
+                    alert('Error al cargar productos: ' + error.message);
                 });
         } else {
             // Deshabilitar el select de productos

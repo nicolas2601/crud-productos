@@ -15,7 +15,7 @@ class ProductoController extends Controller
      */
     public function index(): View
     {
-        $productos = Producto::with('proveedor')->latest()->paginate(10);
+        $productos = Producto::with('proveedores')->latest()->paginate(10);
         return view('productos.index', compact('productos'));
     }
 
@@ -36,12 +36,22 @@ class ProductoController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
+            'categoria' => 'nullable|string|max:255',
             'stock' => 'required|integer|min:0',
             'precio' => 'required|numeric|min:0',
-            'proveedor_id' => 'required|exists:proveedors,id',
+            // Ya no validamos un único proveedor_id, sino un array de proveedores
+            'proveedores' => 'nullable|array', // Permitir que no se seleccione ninguno inicialmente
+            'proveedores.*' => 'exists:proveedors,id' // Validar que cada ID exista
         ]);
 
-        Producto::create($request->all());
+        $producto = Producto::create($request->only(['nombre', 'descripcion', 'categoria', 'stock', 'precio']));
+
+        // Asignar los proveedores seleccionados (si los hay)
+        if ($request->has('proveedores')) {
+            // El método sync se encarga de añadir las nuevas relaciones y quitar las que no estén en el array
+            $producto->proveedores()->sync($request->proveedores);
+            // Aquí podríamos añadir lógica para guardar el precio_compra si se incluye en el form
+        }
 
         return redirect()->route('productos.index')
             ->with('success', 'Producto creado exitosamente.');
@@ -72,12 +82,20 @@ class ProductoController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
+            'categoria' => 'nullable|string|max:255',
             'stock' => 'required|integer|min:0',
             'precio' => 'required|numeric|min:0',
-            'proveedor_id' => 'required|exists:proveedors,id',
+            // Validar el array de proveedores
+            'proveedores' => 'nullable|array',
+            'proveedores.*' => 'exists:proveedors,id'
         ]);
 
-        $producto->update($request->all());
+        $producto->update($request->only(['nombre', 'descripcion', 'categoria', 'stock', 'precio']));
+
+        // Sincronizar los proveedores
+        // Si no se envía 'proveedores', sync([]) desasociará todos los proveedores.
+        $producto->proveedores()->sync($request->input('proveedores', []));
+        // Aquí también podríamos añadir lógica para actualizar el precio_compra si se incluye en el form
 
         return redirect()->route('productos.index')
             ->with('success', 'Producto actualizado exitosamente.');
@@ -99,7 +117,7 @@ class ProductoController extends Controller
      */
     public function trash(): View
     {
-        $productosTrashed = Producto::onlyTrashed()->with('proveedor')->paginate(10);
+        $productosTrashed = Producto::onlyTrashed()->with('proveedores')->paginate(10);
         return view('productos.trash', compact('productosTrashed'));
     }
 

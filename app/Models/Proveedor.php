@@ -11,6 +11,17 @@ class Proveedor extends Model
 {
     use HasFactory, SoftDeletes;
 
+    // Relación muchos a muchos con Producto
+    public function productos()
+    {
+        return $this->belongsToMany(Producto::class, 'producto_proveedor');
+    }
+
+    public function salidas()
+    {
+        return $this->belongsToMany(SalidaInventario::class, 'proveedor_salida_pivot');
+    }
+
     /**
      * La tabla asociada al modelo.
      *
@@ -28,14 +39,6 @@ class Proveedor extends Model
         'empresa',
         'contacto',
     ];
-
-    /**
-     * Obtener los productos del proveedor.
-     */
-    public function productos(): HasMany
-    {
-        return $this->hasMany(Producto::class);
-    }
 
     /**
      * Obtener las entradas de inventario del proveedor.

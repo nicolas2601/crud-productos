@@ -20,17 +20,25 @@ class Producto extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
-        'stock',
         'precio',
-        'proveedor_id',
+        'stock',
+        'categoria',
+        'imagen',
+        'franquicia',
     ];
 
-    /**
-     * Obtener el proveedor al que pertenece el producto.
-     */
-    public function proveedor(): BelongsTo
+    // Relación muchos a muchos con Proveedor
+    public function proveedores()
     {
-        return $this->belongsTo(Proveedor::class);
+        return $this->belongsToMany(Proveedor::class, 'producto_proveedor')
+                    ->withPivot('precio_compra') // Incluir el campo extra de la tabla pivote
+                    ->withTimestamps(); // Mantener timestamps en la tabla pivote
+    }
+
+    // Relación uno a muchos con SalidaInventario
+    public function salidasInventario()
+    {
+        return $this->hasMany(SalidaInventario::class);
     }
 
     /**
@@ -39,5 +47,11 @@ class Producto extends Model
     public function entradas(): HasMany
     {
         return $this->hasMany(Entrada::class);
+    }
+
+    // Relación belongsTo con Proveedor
+    public function proveedor()
+    {
+        return $this->belongsTo(Proveedor::class);
     }
 }

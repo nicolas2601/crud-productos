@@ -38,6 +38,24 @@
                     @enderror
                 </div>
 
+                <div class="mb-3">
+                    <label for="productos" class="form-label">Productos que provee</label>
+                    <select multiple class="form-select @error('productos') is-invalid @enderror" id="productos" name="productos[]" size="5">
+                        @foreach ($productos as $producto)
+                            <option value="{{ $producto->id }}" {{ in_array($producto->id, old('productos', $productosProveedor)) ? 'selected' : '' }}>
+                                {{ $producto->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small class="form-text text-muted">Mantén presionada la tecla Ctrl (o Cmd en Mac) para seleccionar múltiples productos.</small>
+                    @error('productos')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    @error('productos.*') {{-- Para errores de validación de cada elemento del array --}}
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save me-1"></i> Actualizar
