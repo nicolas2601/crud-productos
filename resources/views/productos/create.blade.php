@@ -1,129 +1,101 @@
 @extends('layouts.app')
 
-@section('title', 'Crear Nuevo Producto')
-
 @section('content')
-<div class="container py-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('productos.index') }}">Productos</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Crear Nuevo Producto</li>
-        </ol>
-    </nav>
+<div class="container-fluid fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Crear Nuevo Producto</h1>
+        <a href="{{ route('productos.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Volver al Listado
+        </a>
+    </div>
 
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="card-title h5 mb-0">Crear Nuevo Producto</h1>
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ route('productos.store') }}" method="POST">
+                @csrf
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" required>
+                    @error('nombre')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
 
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" required>
-                            @error('nombre')
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="3">{{ old('descripcion') }}</textarea>
+                    @error('descripcion')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="stock" class="form-label">Stock Inicial</label>
+                        <input type="number" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" value="{{ old('stock', 0) }}" min="0" required>
+                        @error('stock')
                             <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @enderror
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
-                            <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" required>{{ old('descripcion') }}</textarea>
-                            @error('descripcion')
+                    <div class="col-md-6 mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <input type="text" class="form-control @error('categoria') is-invalid @enderror" id="categoria" name="categoria" value="{{ old('categoria') }}">
+                        @error('categoria')
                             <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @enderror
+                    </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="precio" class="form-label">Precio <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" step="0.01" min="0" class="form-control @error('precio') is-invalid @enderror" id="precio" name="precio" value="{{ old('precio') }}" required>
-                                        @error('precio')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="stock" class="form-label">Stock <span class="text-danger">*</span></label>
-                                    <input type="number" min="0" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" value="{{ old('stock', 0) }}" required>
-                                    @error('stock')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('categoria') is-invalid @enderror" id="categoria" name="categoria" required>
-                                        <option value="" selected disabled>Seleccionar categoría</option>
-                                        <option value="Anime" {{ old('categoria') == 'Anime' ? 'selected' : '' }}>Anime</option>
-                                        <option value="Videojuego" {{ old('categoria') == 'Videojuego' ? 'selected' : '' }}>Videojuego</option>
-                                        <option value="Manga" {{ old('categoria') == 'Manga' ? 'selected' : '' }}>Manga</option>
-                                        <option value="Figura" {{ old('categoria') == 'Figura' ? 'selected' : '' }}>Figura</option>
-                                        <option value="Coleccionable" {{ old('categoria') == 'Coleccionable' ? 'selected' : '' }}>Coleccionable</option>
-                                        <option value="Ropa" {{ old('categoria') == 'Ropa' ? 'selected' : '' }}>Ropa</option>
-                                        <option value="Accesorio" {{ old('categoria') == 'Accesorio' ? 'selected' : '' }}>Accesorio</option>
-                                    </select>
-                                    @error('categoria')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="franquicia" class="form-label">Franquicia</label>
-                                    <input type="text" class="form-control @error('franquicia') is-invalid @enderror" id="franquicia" name="franquicia" value="{{ old('franquicia') }}" placeholder="Ej: Naruto, Final Fantasy">
-                                    @error('franquicia')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="imagen" class="form-label">Imagen del producto</label>
-                            <input type="file" class="form-control @error('imagen') is-invalid @enderror" id="imagen" name="imagen" accept="image/*">
-                            <div class="form-text">Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB</div>
-                            @error('imagen')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input @error('es_destacado') is-invalid @enderror" type="checkbox" id="es_destacado" name="es_destacado" value="1" {{ old('es_destacado') ? 'checked' : '' }}>
-                                <label class="form-check-label" for="es_destacado">
-                                    Marcar como producto destacado
-                                </label>
-                                @error('es_destacado')
+                    <div class="col-md-6 mb-3">
+                        <label for="precio" class="form-label">Precio</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control @error('precio') is-invalid @enderror" id="precio" name="precio" value="{{ old('precio', 0.00) }}" min="0" step="0.01" required>
+                            @error('precio')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            @enderror
                         </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('productos.index') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle me-1"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-1"></i> Guardar Producto
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <div class="mb-3">
+                    <label for="proveedores" class="form-label">Proveedores</label>
+                    <select multiple class="form-select @error('proveedores') is-invalid @enderror" id="proveedores" name="proveedores[]" size="5">
+                        @foreach ($proveedores as $proveedor)
+                            <option value="{{ $proveedor->id }}" {{ in_array($proveedor->id, old('proveedores', [])) ? 'selected' : '' }}>
+                                {{ $proveedor->nombre }} ({{ $proveedor->empresa }})
+                            </option>
+                        @endforeach
+                    </select>
+                    <small class="form-text text-muted">Mantén presionada la tecla Ctrl (o Cmd en Mac) para seleccionar múltiples proveedores.</small>
+                    @error('proveedores')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    @error('proveedores.*') {{-- Para errores de validación de cada elemento del array --}}
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Guardar
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    // Animación para el formulario
+    anime({
+        targets: '.card',
+        scale: [0.9, 1],
+        opacity: [0, 1],
+        duration: 800,
+        easing: 'easeOutElastic(1, .8)'
+    });
+</script>
 @endsection

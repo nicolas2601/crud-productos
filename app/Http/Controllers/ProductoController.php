@@ -3,151 +3,145 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
+use App\Models\Proveedor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ProductoController extends Controller
 {
     /**
-     * Muestra un listado de todos los productos.
+     * Mostrar un listado de productos.
      */
-    public function index()
+    public function index(): View
     {
-        $productos = Producto::all();
+        $productos = Producto::with('proveedores')->latest()->paginate(10);
         return view('productos.index', compact('productos'));
     }
 
     /**
-     * Muestra el formulario para crear un nuevo producto.
+     * Mostrar el formulario para crear un nuevo producto.
      */
-    public function create()
+    public function create(): View
     {
-        return view('productos.create');
+        $proveedores = Proveedor::all();
+        return view('productos.create', compact('proveedores'));
     }
 
     /**
-     * Almacena un nuevo producto en la base de datos.
+     * Almacenar un nuevo producto en la base de datos.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $request->validate([
             'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'precio' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string',
+            'categoria' => 'nullable|string|max:255',
             'stock' => 'required|integer|min:0',
-            'categoria' => 'required|string|max:255',
-            'franquicia' => 'nullable|string|max:255',
-            'es_destacado' => 'boolean',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'precio' => 'required|numeric|min:0',
+            // Ya no validamos un único proveedor_id, sino un array de proveedores
+            'proveedores' => 'nullable|array', // Permitir que no se seleccione ninguno inicialmente
+            'proveedores.*' => 'exists:proveedors,id' // Validar que cada ID exista
         ]);
 
-        if ($request->hasFile('imagen')) {
-            $imagenPath = $request->file('imagen')->store('productos', 'public');
-            $validated['imagen'] = $imagenPath;
-        }
+        $producto = Producto::create($request->only(['nombre', 'descripcion', 'categoria', 'stock', 'precio']));
 
-        Producto::create($validated);
+        // Asignar los proveedores seleccionados (si los hay)
+        if ($request->has('proveedores')) {
+            // El método sync se encarga de añadir las nuevas relaciones y quitar las que no estén en el array
+            $producto->proveedores()->sync($request->proveedores);
+            // Aquí podríamos añadir lógica para guardar el precio_compra si se incluye en el form
+        }
 
         return redirect()->route('productos.index')
             ->with('success', 'Producto creado exitosamente.');
     }
 
     /**
-     * Muestra un producto específico.
+     * Mostrar un producto específico.
      */
-    public function show(Producto $producto)
+    public function show(Producto $producto): View
     {
         return view('productos.show', compact('producto'));
     }
 
     /**
-     * Muestra el formulario para editar un producto existente.
+     * Mostrar el formulario para editar un producto.
      */
-    public function edit(Producto $producto)
+    public function edit(Producto $producto): View
     {
-        return view('productos.edit', compact('producto'));
+        $proveedores = Proveedor::all();
+        return view('productos.edit', compact('producto', 'proveedores'));
     }
 
     /**
-     * Actualiza un producto específico en la base de datos.
+     * Actualizar un producto en la base de datos.
      */
-    public function update(Request $request, Producto $producto)
+    public function update(Request $request, Producto $producto): RedirectResponse
     {
-        $validated = $request->validate([
+        $request->validate([
             'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'precio' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string',
+            'categoria' => 'nullable|string|max:255',
             'stock' => 'required|integer|min:0',
-            'categoria' => 'required|string|max:255',
-            'franquicia' => 'nullable|string|max:255',
-            'es_destacado' => 'boolean',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'precio' => 'required|numeric|min:0',
+            // Validar el array de proveedores
+            'proveedores' => 'nullable|array',
+            'proveedores.*' => 'exists:proveedors,id'
         ]);
 
-        if ($request->hasFile('imagen')) {
-            // Eliminar la imagen anterior si existe
-            if ($producto->imagen) {
-                Storage::disk('public')->delete($producto->imagen);
-            }
-            
-            $imagenPath = $request->file('imagen')->store('productos', 'public');
-            $validated['imagen'] = $imagenPath;
-        }
+        $producto->update($request->only(['nombre', 'descripcion', 'categoria', 'stock', 'precio']));
 
-        $producto->update($validated);
+        // Sincronizar los proveedores
+        // Si no se envía 'proveedores', sync([]) desasociará todos los proveedores.
+        $producto->proveedores()->sync($request->input('proveedores', []));
+        // Aquí también podríamos añadir lógica para actualizar el precio_compra si se incluye en el form
 
         return redirect()->route('productos.index')
             ->with('success', 'Producto actualizado exitosamente.');
     }
 
     /**
-     * Elimina un producto específico de la base de datos (soft delete).
+     * Eliminar un producto de la base de datos (soft delete).
      */
-    public function destroy(Producto $producto)
+    public function destroy(Producto $producto): RedirectResponse
     {
         $producto->delete();
 
         return redirect()->route('productos.index')
             ->with('success', 'Producto eliminado exitosamente.');
     }
-    
+
     /**
-     * Muestra la lista de productos eliminados (papelera).
+     * Mostrar productos eliminados.
      */
-    public function papelera()
+    public function trash(): View
     {
-        $productosEliminados = Producto::onlyTrashed()->get();
-        return view('productos.papelera', compact('productosEliminados'));
+        $productosTrashed = Producto::onlyTrashed()->with('proveedores')->paginate(10);
+        return view('productos.trash', compact('productosTrashed'));
     }
-    
+
     /**
-     * Restaura un producto eliminado.
+     * Restaurar un producto eliminado.
      */
-    public function restaurar($id)
+    public function restore($id): RedirectResponse
     {
         $producto = Producto::onlyTrashed()->findOrFail($id);
         $producto->restore();
-        
-        return redirect()->route('productos.papelera')
+
+        return redirect()->route('productos.trash')
             ->with('success', 'Producto restaurado exitosamente.');
     }
-    
+
     /**
-     * Elimina permanentemente un producto.
+     * Eliminar permanentemente un producto.
      */
-    public function eliminarPermanente($id)
+    public function forceDelete($id): RedirectResponse
     {
         $producto = Producto::onlyTrashed()->findOrFail($id);
-        
-        // Eliminar la imagen si existe
-        if ($producto->imagen) {
-            Storage::disk('public')->delete($producto->imagen);
-        }
-        
         $producto->forceDelete();
-        
-        return redirect()->route('productos.papelera')
+
+        return redirect()->route('productos.trash')
             ->with('success', 'Producto eliminado permanentemente.');
     }
 }

@@ -1,65 +1,86 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 sm:px-8">
-    <div class="py-8">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-bold leading-tight text-purple-300">Lista de Proveedores</h2>
-            <a href="{{ route('proveedores.create') }}" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center">
-                <i class="fas fa-plus-circle mr-2"></i>Nuevo Proveedor
+<div class="container-fluid fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Listado de Proveedores</h1>
+        <div>
+            <a href="{{ route('proveedores.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Nuevo Proveedor
+            </a>
+            <a href="{{ route('proveedores.trash') }}" class="btn btn-secondary ms-2">
+                <i class="fas fa-trash me-1"></i> Papelera
             </a>
         </div>
+    </div>
 
-        <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-            <div class="inline-block min-w-full shadow-2xl rounded-lg overflow-hidden border-2 border-purple-500 bg-gray-900">
-                <table class="min-w-full leading-normal">
-                    <thead>
-                        <tr>
-                            <th class="px-6 py-4 border-b-2 border-purple-300 bg-gray-700 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Nombre</th>
-                            <th class="px-6 py-4 border-b-2 border-purple-300 bg-gray-700 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Email</th>
-                            <th class="px-6 py-4 border-b-2 border-purple-300 bg-gray-700 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Teléfono</th>
-                            <th class="px-6 py-4 border-b-2 border-purple-300 bg-gray-700 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">NIT</th>
-                            <th class="px-6 py-4 border-b-2 border-purple-300 bg-gray-700 text-left text-sm font-semibold text-purple-200 uppercase tracking-wider">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-gray-700">
-                        @foreach($proveedores as $proveedor)
-                        <tr class="hover:bg-gray-800 transition-all duration-300 transform hover:scale-[1.01]">
-                            <td class="px-6 py-5 border-b border-purple-400">
-                                <p class="text-purple-100 whitespace-no-wrap text-sm font-medium">{{ $proveedor->nombre }}</p>
-                            </td>
-                            <td class="px-6 py-5 border-b border-purple-400">
-                                <p class="text-purple-100 whitespace-no-wrap text-sm">{{ $proveedor->email }}</p>
-                            </td>
-                            <td class="px-6 py-5 border-b border-purple-400">
-                                <p class="text-purple-100 whitespace-no-wrap text-sm">{{ $proveedor->telefono }}</p>
-                            </td>
-                            <td class="px-6 py-5 border-b border-purple-400">
-                                <p class="text-purple-100 whitespace-no-wrap text-sm">{{ $proveedor->nit }}</p>
-                            </td>
-                            <td class="px-6 py-5 border-b border-purple-400">
-                                <div class="flex space-x-4">
-                                    <a href="{{ route('proveedores.show', $proveedor->id) }}" class="text-blue-400 hover:text-blue-300 transition-all duration-300 transform hover:scale-110" title="Ver detalles">
-                                        <i class="fas fa-eye text-lg"></i>
-                                    </a>
-                                    <a href="{{ route('proveedores.edit', $proveedor->id) }}" class="text-yellow-400 hover:text-yellow-300 transition-all duration-300 transform hover:scale-110" title="Editar">
-                                        <i class="fas fa-edit text-lg"></i>
-                                    </a>
-                                    <form action="{{ route('proveedores.destroy', $proveedor->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-400 hover:text-red-300 transition-all duration-300 transform hover:scale-110" onclick="return confirm('¿Estás seguro de eliminar este proveedor?')" title="Eliminar">
-                                            <i class="fas fa-trash text-lg"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    <div class="card">
+        <div class="card-body">
+            @if($proveedores->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Empresa</th>
+                                <th>Contacto</th>
+                                <th>Fecha de Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($proveedores as $proveedor)
+                                <tr>
+                                    <td>{{ $proveedor->id }}</td>
+                                    <td>{{ $proveedor->nombre }}</td>
+                                    <td>{{ $proveedor->empresa }}</td>
+                                    <td>{{ $proveedor->contacto }}</td>
+                                    <td>{{ $proveedor->created_at->format('d/m/Y') }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('proveedores.show', $proveedor->id) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('proveedores.edit', $proveedor->id) }}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('proveedores.destroy', $proveedor->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este proveedor?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    {{ $proveedores->links() }}
+                </div>
+            @else
+                <div class="alert alert-info">
+                    No hay proveedores registrados.
+                </div>
+            @endif
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    // Animación específica para la tabla de proveedores
+    anime({
+        targets: 'tbody tr',
+        translateY: [20, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(50),
+        easing: 'easeOutExpo'
+    });
+</script>
 @endsection

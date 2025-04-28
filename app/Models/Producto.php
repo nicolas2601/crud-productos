@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Producto extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductoFactory> */
     use HasFactory, SoftDeletes;
-    
+
     /**
-     * Los atributos que son asignables masivamente.
+     * Los atributos que son asignables en masa.
      *
      * @var array<int, string>
      */
@@ -24,16 +25,33 @@ class Producto extends Model
         'categoria',
         'imagen',
         'franquicia',
-        'es_destacado'
     ];
-    
+
+    // Relación muchos a muchos con Proveedor
+    public function proveedores()
+    {
+        return $this->belongsToMany(Proveedor::class, 'producto_proveedor')
+                    ->withPivot('precio_compra') // Incluir el campo extra de la tabla pivote
+                    ->withTimestamps(); // Mantener timestamps en la tabla pivote
+    }
+
+    // Relación uno a muchos con SalidaInventario
+    public function salidasInventario()
+    {
+        return $this->hasMany(SalidaInventario::class);
+    }
+
     /**
-     * Los atributos que deben ser convertidos a tipos nativos.
-     *
-     * @var array<string, string>
+     * Obtener las entradas de inventario del producto.
      */
-    protected $casts = [
-        'precio' => 'decimal:2',
-        'es_destacado' => 'boolean',
-    ];
+    public function entradas(): HasMany
+    {
+        return $this->hasMany(Entrada::class);
+    }
+
+    // Relación belongsTo con Proveedor
+    public function proveedor()
+    {
+        return $this->belongsTo(Proveedor::class);
+    }
 }

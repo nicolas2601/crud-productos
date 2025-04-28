@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('descripcion');
             $table->decimal('precio', 10, 2);
             $table->integer('stock')->default(0);
-            $table->string('categoria'); // Anime, Videojuego, Manga, etc.
+            $table->string('categoria')->nullable(); // Anime, Videojuego, Manga, etc.
             $table->string('imagen')->nullable();
             $table->string('franquicia')->nullable(); // Naruto, Dragon Ball, Final Fantasy, etc.
             $table->boolean('es_destacado')->default(false);

@@ -1,112 +1,206 @@
 @extends('layouts.app')
 
-@section('title', $producto->nombre)
-
 @section('content')
-<div class="container py-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('productos.index') }}">Productos</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ $producto->nombre }}</li>
-        </ol>
-    </nav>
+<div class="container-fluid fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Detalles del Producto</h1>
+        <div>
+            <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-warning">
+                <i class="fas fa-edit me-1"></i> Editar
+            </a>
+            <a href="{{ route('productos.index') }}" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Listado
+            </a>
+        </div>
+    </div>
 
     <div class="row">
-        <div class="col-md-5">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body text-center p-4">
-                    @if($producto->imagen)
-                    <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="img-fluid rounded mb-3" style="max-height: 300px;">
-                    @else
-                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 300px;">
-                        <i class="bi bi-image text-secondary" style="font-size: 5rem;"></i>
-                    </div>
-                    @endif
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Información del Producto</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th class="bg-light" style="width: 30%">ID</th>
+                            <td>{{ $producto->id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">Nombre</th>
+                            <td>{{ $producto->nombre }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">Descripción</th>
+                            <td>{{ $producto->descripcion ?: 'No disponible' }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">Stock</th>
+                            <td>{{ $producto->stock }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">Precio</th>
+                            <td>${{ number_format($producto->precio, 2) }}</td>
+                        </tr>
 
-                    @if($producto->es_destacado)
-                    <div class="position-absolute top-0 end-0 p-2">
-                        <span class="badge bg-primary"><i class="bi bi-star-fill"></i> Producto Destacado</span>
-                    </div>
+                        <tr>
+                            <th class="bg-light">Fecha de Creación</th>
+                            <td>{{ $producto->created_at->format('d/m/Y H:i:s') }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">Última Actualización</th>
+                            <td>{{ $producto->updated_at->format('d/m/Y H:i:s') }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Proveedores Asociados</h5>
+                </div>
+                <div class="card-body">
+                    @if($producto->proveedores->count() > 0)
+                        <ul class="list-group">
+                            @foreach($producto->proveedores as $proveedor)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('proveedores.show', $proveedor->id) }}">{{ $proveedor->nombre }} ({{ $proveedor->empresa }})</a>
+                                    <span class="badge bg-primary rounded-pill">Precio Compra: ${{ number_format($proveedor->pivot->precio_compra ?? 0, 2) }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <div class="alert alert-secondary">No hay proveedores asociados a este producto.</div>
                     @endif
                 </div>
             </div>
         </div>
 
-        <div class="col-md-7">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h1 class="card-title h3 fw-bold">{{ $producto->nombre }}</h1>
-                    
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="badge bg-primary me-2">{{ $producto->categoria }}</span>
-                        @if($producto->franquicia)
-                        <span class="badge bg-secondary">{{ $producto->franquicia }}</span>
-                        @endif
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Estadísticas</h5>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="row text-center">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Stock Actual</h5>
+                                    <h2 class="display-4">{{ $producto->stock }}</h2>
+                                    <p class="card-text">unidades</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Valor en Inventario</h5>
+                                    <h2 class="display-4">${{ number_format($producto->stock * $producto->precio, 2) }}</h2>
+                                    <p class="card-text">total</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <h2 class="h4 text-primary fw-bold mb-3">${{ number_format($producto->precio, 2) }}</h2>
-
-                    <div class="mb-4">
-                        @if($producto->stock > 10)
-                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> En stock ({{ $producto->stock }} disponibles)</span>
-                        @elseif($producto->stock > 0)
-                        <span class="badge bg-warning"><i class="bi bi-exclamation-circle"></i> Pocas unidades ({{ $producto->stock }} disponibles)</span>
-                        @else
-                        <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Agotado</span>
-                        @endif
-                    </div>
-
-                    <h3 class="h5 fw-bold">Descripción</h3>
-                    <p class="card-text">{{ $producto->descripcion }}</p>
-
-                    <div class="d-flex mt-4">
-                        <a href="{{ route('productos.edit', $producto) }}" class="btn btn-warning me-2">
-                            <i class="bi bi-pencil me-1"></i> Editar
-                        </a>
-                        <form action="{{ route('productos.destroy', $producto) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-trash me-1"></i> Eliminar
-                            </button>
-                        </form>
-                        <a href="{{ route('productos.index') }}" class="btn btn-outline-secondary ms-auto">
-                            <i class="bi bi-arrow-left me-1"></i> Volver
-                        </a>
+                    <div class="mt-3">
+                        <div class="progress" style="height: 25px;">
+                            @php
+                                $stockLevel = $producto->stock;
+                                $stockClass = 'bg-danger';
+                                $stockText = 'Bajo';
+                                
+                                if ($stockLevel > 50) {
+                                    $stockClass = 'bg-success';
+                                    $stockText = 'Alto';
+                                } elseif ($stockLevel > 20) {
+                                    $stockClass = 'bg-warning';
+                                    $stockText = 'Medio';
+                                }
+                                
+                                $stockPercentage = min(100, $stockLevel);
+                            @endphp
+                            <div class="progress-bar {{ $stockClass }}" role="progressbar" style="width: {{ $stockPercentage }}%" aria-valuenow="{{ $stockLevel }}" aria-valuemin="0" aria-valuemax="100">
+                                Nivel de Stock: {{ $stockText }} ({{ $stockLevel }})
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="card shadow-sm mt-4">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Historial de Entradas</h5>
+                </div>
                 <div class="card-body">
-                    <h3 class="h5 fw-bold">Detalles del producto</h3>
-                    <table class="table table-sm">
-                        <tbody>
-                            <tr>
-                                <th style="width: 150px;">ID:</th>
-                                <td>{{ $producto->id }}</td>
-                            </tr>
-                            <tr>
-                                <th>Categoría:</th>
-                                <td>{{ $producto->categoria }}</td>
-                            </tr>
-                            <tr>
-                                <th>Franquicia:</th>
-                                <td>{{ $producto->franquicia ?? 'No especificada' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Creado:</th>
-                                <td>{{ $producto->created_at->format('d/m/Y H:i') }}</td>
-                            </tr>
-                            <tr>
-                                <th>Actualizado:</th>
-                                <td>{{ $producto->updated_at->format('d/m/Y H:i') }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    @if($producto->entradas->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Proveedor</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unitario</th>
+                                        <th>Total</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($producto->entradas as $entrada)
+                                        <tr>
+                                            <td>{{ $entrada->id }}</td>
+                                            <td>{{ $entrada->proveedores->first()->nombre ?? 'N/A' }}</td>
+                                            <td>{{ $entrada->cantidad }}</td>
+                                            <td>${{ number_format($entrada->precio_unitario, 2) }}</td>
+                                            <td>${{ number_format($entrada->total, 2) }}</td>
+                                            <td>{{ $entrada->fecha->format('d/m/Y') }}</td>
+                                            <td>
+                                                <a href="{{ route('entradas.factura', $entrada->id) }}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-file-invoice"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="alert alert-info">
+                            Este producto no tiene entradas de inventario registradas.
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    // Animaciones para las tarjetas
+    anime({
+        targets: '.card',
+        translateY: [20, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(100),
+        easing: 'easeOutExpo'
+    });
+    
+    // Animación para las filas de las tablas
+    anime({
+        targets: 'tbody tr',
+        translateX: [20, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(50),
+        easing: 'easeOutQuad'
+    });
+</script>
 @endsection
