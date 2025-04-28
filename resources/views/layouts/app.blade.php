@@ -110,6 +110,12 @@
                             <p>Salidas de Inventario</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('clientes.index') }}">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>Clientes</p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

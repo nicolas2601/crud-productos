@@ -39,6 +39,18 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="clientes" class="form-label">Clientes</label>
+                    <select class="form-select @error('clientes') is-invalid @enderror" id="clientes" name="clientes[]" multiple>
+                        @foreach ($clientes as $cliente)
+                            <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
+                        @endforeach
+                    </select>
+                    @error('clientes')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
                     <label for="motivo" class="form-label">Motivo (Opcional)</label>
                     <textarea class="form-control @error('motivo') is-invalid @enderror" id="motivo" name="motivo" rows="3">{{ old('motivo') }}</textarea>
                     @error('motivo')

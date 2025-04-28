@@ -9,6 +9,11 @@ class SalidaInventario extends Model
 {
     use HasFactory;
 
+    public function clientes()
+    {
+        return $this->belongsToMany(Cliente::class, 'cliente_salida');
+    }
+
     protected $fillable = [
         'producto_id',
         'cantidad',

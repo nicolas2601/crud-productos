@@ -25,6 +25,7 @@
                             <th>ID</th>
                             <th>Producto</th>
                             <th>Cantidad</th>
+                            <th>Cliente</th>
                             <th>Fecha Salida</th>
                             <th>Motivo</th>
                             <th>Acciones</th>
@@ -36,6 +37,7 @@
                                 <td>{{ $salida->id }}</td>
                                 <td>{{ $salida->producto->nombre ?? 'Producto no encontrado' }}</td>
                                 <td>{{ $salida->cantidad }}</td>
+                                <td>{{ $salida->clientes->first()->nombre ?? 'No especificado' }}</td>
                                 <td>{{ $salida->fecha_salida->format('d/m/Y H:i') }}</td>
                                 <td>{{ $salida->motivo ?? '-' }}</td>
                                 <td>

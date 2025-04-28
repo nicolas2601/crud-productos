@@ -17,8 +17,25 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong class="text-muted">Producto:</strong>
-                        <p>{{ $salidaInventario->producto->nombre ?? 'N/A' }}</p>
+                        <div class="form-group">
+                            <label for="producto_id">Producto</label>
+                            <select class="form-control" name="producto_id" id="producto_id" required>
+                                @foreach($productos as $id => $nombre)
+                                    <option value="{{ $id }}" {{ $salidaInventario->producto_id == $id ? 'selected' : '' }}>{{ $nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientes">Clientes asociados</label>
+                            <select class="form-control" name="clientes[]" id="clientes" multiple>
+                                @foreach($clientes as $id => $nombre)
+                                    <option value="{{ $id }}" {{ in_array($id, $salidaInventario->clientes->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <strong class="text-muted">Cantidad:</strong>

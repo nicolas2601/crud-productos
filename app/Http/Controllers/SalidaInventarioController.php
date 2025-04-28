@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SalidaInventario;
 use App\Models\Producto;
+use App\Models\Cliente;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -16,7 +17,7 @@ class SalidaInventarioController extends Controller
      */
     public function index(): View
     {
-        $salidas = SalidaInventario::with('producto')->latest()->paginate(10);
+        $salidas = SalidaInventario::with(['producto', 'clientes'])->latest()->paginate(10);
         return view('salidas.index', compact('salidas'));
     }
 
@@ -25,8 +26,9 @@ class SalidaInventarioController extends Controller
      */
     public function create(): View
     {
-        $productos = Producto::orderBy('nombre')->get(); // Obtener todos los productos
-        return view('salidas.create', compact('productos'));
+        $productos = Producto::orderBy('nombre')->get();
+        $clientes = Cliente::orderBy('nombre')->get();
+        return view('salidas.create', compact('productos', 'clientes'));
     }
 
     /**
@@ -49,12 +51,17 @@ class SalidaInventarioController extends Controller
 
         DB::transaction(function () use ($request, $producto) {
             // Crear la salida de inventario
-            SalidaInventario::create([
+            $salida = SalidaInventario::create([
                 'producto_id' => $request->producto_id,
                 'cantidad' => $request->cantidad,
                 'motivo' => $request->motivo,
-                'fecha_salida' => now(), // Opcional: usar la fecha actual
+                'fecha_salida' => now(),
             ]);
+
+            // Asociar clientes si existen
+            if($request->has('clientes')) {
+                $salida->clientes()->sync($request->clientes);
+            }
 
             // Actualizar el stock del producto
             $producto->stock -= $request->cantidad;
@@ -91,14 +98,18 @@ class SalidaInventarioController extends Controller
     public function update(Request $request, SalidaInventario $salidaInventario): RedirectResponse
     {
         $request->validate([
-            'motivo' => 'nullable|string|max:255',
+            'producto_id' => 'required|exists:productos,id',
+            'cantidad' => 'required|integer|min:1',
+            'fecha_salida' => 'required|date',
+            'clientes' => 'required|array',
+            'clientes.*' => 'exists:clientes,id'
         ]);
 
-        // Solo actualizamos el motivo, ya que cambiar cantidad o producto afectaría el stock histórico.
-        $salidaInventario->update(['motivo' => $request->motivo]);
+        $salidaInventario->update($request->all());
+        $salidaInventario->clientes()->sync($request->clientes);
 
-        return redirect()->route('salidas.index') // O a salidas.show si prefieres
-            ->with('success', 'Motivo de la salida actualizado exitosamente.');
+        return redirect()->route('salidas.index')
+            ->with('success', 'Salida actualizada exitosamente');
     }
 
     /**
