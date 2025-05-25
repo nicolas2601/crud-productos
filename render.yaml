@@ -8,6 +8,7 @@ services:
     branch: main
     numInstances: 1
     healthCheckPath: /
+    port: 80
     envVars:
       - key: APP_ENV
         value: production

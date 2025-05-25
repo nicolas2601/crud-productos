@@ -37,6 +37,10 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader
 # Instalar dependencias de Node.js y compilar assets
 RUN npm install && npm run build
 
-# Exponer puerto 9000 y ejecutar php-fpm
-EXPOSE 9000
-CMD ["php-fpm"]
+# Instalar y configurar Nginx
+RUN apt-get update && apt-get install -y nginx
+COPY docker/nginx/app.conf /etc/nginx/conf.d/default.conf
+
+# Exponer puerto 80 y ejecutar Nginx y PHP-FPM
+EXPOSE 80
+CMD sh -c "service nginx start && php-fpm"
