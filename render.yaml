@@ -55,6 +55,6 @@ services:
       - key: MYSQL_USER
         value: gaming_user
       - key: MYSQL_PASSWORD
-        sync: gaming-hardware-app:DB_PASSWORD
+        generateValue: true
       - key: MYSQL_ROOT_PASSWORD
         generateValue: true
