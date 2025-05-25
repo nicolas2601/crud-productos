@@ -1,0 +1,60 @@
+services:
+  # Servicio web para la aplicación Laravel
+  - type: web
+    name: gaming-hardware-app
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    branch: main
+    numInstances: 1
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        fromService:
+          name: gaming-hardware-app
+          type: web
+          property: host
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromService:
+          name: gaming-hardware-db
+          type: pserv
+          property: host
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: gaming_hardware
+      - key: DB_USERNAME
+        value: gaming_user
+      - key: DB_PASSWORD
+        generateValue: true
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+
+  # Servicio de base de datos MySQL
+  - type: pserv
+    name: gaming-hardware-db
+    env: docker
+    plan: starter
+    repo: https://github.com/render-examples/mysql
+    envVars:
+      - key: MYSQL_DATABASE
+        value: gaming_hardware
+      - key: MYSQL_USER
+        value: gaming_user
+      - key: MYSQL_PASSWORD
+        sync: gaming-hardware-app:DB_PASSWORD
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
