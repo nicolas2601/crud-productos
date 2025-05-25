@@ -44,6 +44,9 @@ RUN npm install && npm run build
 # Volver a root para el comando final
 USER root
 
+# Configurar PHP-FPM para escuchar en 127.0.0.1:9000
+RUN echo 'listen = 127.0.0.1:9000' >> /usr/local/etc/php-fpm.d/www.conf
+
 # Exponer puerto 80 y ejecutar Nginx y PHP-FPM
 EXPOSE 80
-CMD sh -c "nginx && php-fpm"
+CMD sh -c "php-fpm -D && nginx -g 'daemon off;'"
